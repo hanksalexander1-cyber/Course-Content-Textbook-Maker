@@ -9,10 +9,14 @@ import re
 import time
 import os
 
+
+
+
 def big_boy_pdf():
     #name the file the course name + "combined"
     #if the file exists here, delete it first before merging.
     #AND save combined one level up (not in individual)
+    non_ind_folder_path = f"output/{folder}"
     merger = PdfWriter()
     files = os.listdir(folder_path)
     for pdf in files:
@@ -20,7 +24,7 @@ def big_boy_pdf():
         if os.path.isfile(full_path):
             print(f"appending {full_path}")
             merger.append(full_path)
-    with open(f"{folder_path}/combined.pdf", "wb") as fout:
+    with open(f"{non_ind_folder_path}/combined.pdf", "wb") as fout:
         merger.write(fout)
 
     merger.close()
@@ -32,7 +36,7 @@ def sanitize(str):
     str = re.sub(pattern, ' ', driver.title)
     return str
 
-
+#seeee
 # 1. Initialize the WebDriver (e.g., Chrome)
 # Ensure the path to your chromedriver executable is correct
 driver = webdriver.Chrome()
@@ -152,7 +156,7 @@ finally:
 
 
 # ToDo:
-# Sanitize - done
+# Sanitize
 # combine pdfs - put in folder - output/coursename/combined
 # output/coursename/individual
 # output/coursename/coursename.pdf

@@ -52,6 +52,6 @@ def save_page_as_pdf(driver, url, output_file_name, waittime = 5):
 
     print(f"Saved PDF at true 100% zoom: {output_file_name}")
 
-
+    return pdf["data"]
 
  
