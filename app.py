@@ -52,7 +52,7 @@ def wait_and_login(login_class, login_creds):
         EC.element_to_be_clickable((By.CSS_SELECTOR, login_class))
     )
     element.send_keys(login_creds)
-
+print("now")
 try:
     """program grabs all links on selected page. Opens them, saves the page to pdf.
     stores all pdfs in a folder (maintaining order)
@@ -128,10 +128,7 @@ try:
         time.sleep(2)
         #wait for content to load
         print(f"  Loaded: {driver.title}")
-        save_page_as_pdf(
-            driver, target_url, f"{folder_path}/individual/{str(index).rjust(3, "0")}_{sanitize(driver.title)}.pdf")
-
-        # ---------------------------------------
+        save_page_as_pdf(driver, target_url, f"{folder_path}/individual/{str(index).rjust(3, "0")}_{sanitize(driver.title)}.pdf")
 
         # Since we are using a list of URLs, we don't need to 'go back'
         # unless the site structure requires a specific flow.
