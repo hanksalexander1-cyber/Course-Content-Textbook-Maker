@@ -8,7 +8,9 @@ from pypdf import PdfWriter
 import re
 import time
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 
 
@@ -58,7 +60,8 @@ try:
     element = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "input[type=email]"))
     )
-    element.send_keys("cmp_dalysychenko@ects.org")
+    user_email = os.getenv("USER_EMAIL")
+    element.send_keys(user_email)
 
     element = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "#idSIButton9"))
@@ -68,7 +71,8 @@ try:
     element = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "input[type=password]"))
     )
-    element.send_keys("Ects0719")
+    user_pass = os.getenv("USER_PASS")
+    element.send_keys(user_pass)
 
     # input()
     element = WebDriverWait(driver, 10).until(
