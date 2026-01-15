@@ -9,16 +9,19 @@ import re
 import time
 import os
 from dotenv import load_dotenv
+<<<<<<< HEAD
+=======
+
+load_dotenv()
+>>>>>>> 19c0b48989f88014c5c53dc2a99bcbd3b9fb92c4
 
 load_dotenv()
 
 
-
-def big_boy_pdf():
-    #name the file the course name + "combined"
-    #if the file exists here, delete it first before merging.
-    #AND save combined one level up (not in individual)
-    non_ind_folder_path = f"output/{folder}"
+def pdf_combiner():
+    """name the file the course name + "combined"
+    if the file exists here, delete it first before merging.
+    save combined one level up (not in individual)"""
     merger = PdfWriter()
     files = os.listdir(folder_path)
     for pdf in files:
@@ -26,7 +29,7 @@ def big_boy_pdf():
         if os.path.isfile(full_path):
             print(f"appending {full_path}")
             merger.append(full_path)
-    with open(f"{non_ind_folder_path}/combined.pdf", "wb") as fout:
+    with open(f"{folder_path}/combined.pdf", "wb") as fout:
         merger.write(fout)
 
     merger.close()
@@ -38,61 +41,72 @@ def sanitize(str):
     str = re.sub(pattern, ' ', driver.title)
     return str
 
-#seeee
-# 1. Initialize the WebDriver (e.g., Chrome)
-# Ensure the path to your chromedriver executable is correct
 driver = webdriver.Chrome()
 
-try:
-    # 2. Navigate to a website
-    driver.get("https://ects-cmp.com/course_content/"
-               "")
-    # driver.get("https://ects-cmp.com/course_content/wp-login.php?redirect_to=https%3A%2F%2Fects-cmp.com%2Fcourse_content%2F")
-    print(f"Page title: {driver.title}")
+def wait_and_click_button(button_class):
+    """waits until the url loads or 10 seconds pass by before clicking on a button using css.selecter and its class in the button_class parameter"""
 
-    # Example using By.ID
     element = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable(
-            (By.CSS_SELECTOR, ".wpo365-mssignin-button"))
+        EC.element_to_be_clickable((By.CSS_SELECTOR, button_class))
     )
     element.click()
 
+def wait_and_login(login_class, login_creds):
+    element = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.CSS_SELECTOR, login_class))
+    )
+    element.send_keys(login_creds)
+
+try:
+    """program grabs all links on selected page. Opens them, saves the page to pdf.
+    stores all pdfs in a folder (maintaining order)
+    after all pdfs are processed, combines them together in the appropriate order."""
+
+
+    # 2. Navigate to a website
+    driver.get("https://ects-cmp.com/course_content/""")
+
+    print(f"Page title: {driver.title}")
+
+    wait_and_click_button(".wpo365-mssignin-button")
+
+<<<<<<< HEAD
     element = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "input[type=email]"))
     )
     user_email = os.getenv("USER_EMAIL")
     element.send_keys(user_email)
+=======
+    wait_and_login("input[type=email]", os.getenv("USER_EMAIL"))
+>>>>>>> 19c0b48989f88014c5c53dc2a99bcbd3b9fb92c4
 
-    element = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, "#idSIButton9"))
-    )
-    element.click()
+    wait_and_click_button("#idSIButton9")
 
+<<<<<<< HEAD
     element = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "input[type=password]"))
     )
     user_pass = os.getenv("USER_PASS")
     element.send_keys(user_pass)
+=======
+    wait_and_login("input[type=password]", os.getenv("USER_PASS"))
 
-    # input()
-    element = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, "#idSIButton9"))
-    )
-    element.click()
+    wait_and_click_button("#idSIButton9")
+>>>>>>> 19c0b48989f88014c5c53dc2a99bcbd3b9fb92c4
+
     time.sleep(2)
-    element = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, "#idBtn_Back"))
-    )
-    element.click()
+
+    wait_and_click_button("#idBtn_Back")
+
     wait = WebDriverWait(driver, 10)
+
     elements = wait.until(EC.presence_of_element_located(
         (By.CSS_SELECTOR, ".menu-item")))
-    # wait = WebDriverWait(driver, 5)
+    
     menu_items = driver.find_elements(By.CSS_SELECTOR, ".menu-item")
+
     sub_menu_items = driver.find_elements(
         By.CSS_SELECTOR, ".sub-menu .menu-item")
-    # for item in menu_items:
-    #     print(item.text)
 
     for item in sub_menu_items:
         print(item.text)
@@ -102,16 +116,13 @@ try:
         "text")} for l in links if l.get_attribute("href")]
 
     for idx, elem in enumerate(elements):
-        # driver.get(elem["url"])
         print(f"{idx}:  {elem["text"]} : {elem["url"]}")
 
     choice = input("Enter the index of the page to process: ")
     driver.get(elements[int(choice)]["url"])
     folder = elements[int(choice)]["text"]
-
-    # program grabs all links on selected page. Opens them, saves the page to pdf.
-    # stores all pdfs in a folder (maintaining order)
-    # after all pdfs are processed, combines them together in the appropriate order.
+    folder_path = f"output/{folder}"
+    
 
     content_links = driver.find_elements(
         By.CSS_SELECTOR, ".entry-content a[data-type=post]")
@@ -119,36 +130,33 @@ try:
     urls_to_visit = [url.get_attribute("href") for url in content_links if url.get_attribute(
         "href") and "http" in url.get_attribute("href")]
 
-    # for link in content_links:
-    #     url = link.get_attribute("href")
-    #     if url and "http" in url:  # Ensure it's a valid link
-    #         urls_to_visit.append(url)
-
+    #tells you how many urls the code found
     print(f"Found {len(urls_to_visit)} links to process...")
-    folder_path = f"output/{folder}/individual"
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-    print(folder_path)
+
+    if not os.path.exists(f"{folder_path}/individual"):
+        os.makedirs(f"{folder_path}/individual")
+
+    print(f"{folder_path}/individual")
+
     for index, target_url in enumerate(urls_to_visit):
         print(f"Visiting ({index + 1}/{len(urls_to_visit)}): {target_url}")
 
         # Navigate to the link
         driver.get(target_url)
 
-        # --- YOUR PROCESSING CODE GOES HERE ---
-        # Example: wait for content to load
+        
         time.sleep(2)
-        # Example: print page title
+        #wait for content to load
         print(f"  Loaded: {driver.title}")
         save_page_as_pdf(
-            driver, target_url, f"{folder_path}/{str(index).rjust(3, "0")}_{sanitize(driver.title)}.pdf")
+            driver, target_url, f"{folder_path}/individual/{str(index).rjust(3, "0")}_{sanitize(driver.title)}.pdf")
 
         # ---------------------------------------
 
         # Since we are using a list of URLs, we don't need to 'go back'
         # unless the site structure requires a specific flow.
 
-    big_boy_pdf()
+    pdf_combiner()
 
     hold = input("Press enter to close ")
 
@@ -158,9 +166,3 @@ finally:
     driver.quit()
     print("Browser closed.")
 
-
-# ToDo:
-# Sanitize
-# combine pdfs - put in folder - output/coursename/combined
-# output/coursename/individual
-# output/coursename/coursename.pdf
